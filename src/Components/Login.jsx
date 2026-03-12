@@ -6,33 +6,25 @@ function Login() {
     const [password, setPassword] = useState("");
     const [errors, setErrors] = useState({});
     const navigate = useNavigate();
+    const [role, setRole] = useState("student");
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log("handleSubmit called", { email, password }); // <-- first log
 
-        let newErrors = {};
-
-        // Email validation
-        if (!email) {
-            newErrors.email = "Email is required";
+        // simple fake login validation
+        if (!email || !password) {
+            alert("Please fill all fields");
+            return;
         }
 
-        // Password validation
-        if (!password) {
-            newErrors.password = "Password is required";
-        } else if (password.length < 6) {
-            newErrors.password = "Password must be at least 6 characters";
-        }
+        // Save role to localStorage
+        localStorage.setItem("role", role);
 
-        // If there are errors, show them
-        if (Object.keys(newErrors).length > 0) {
-            setErrors(newErrors);
+        // Redirect based on role
+        if (role === "student") {
+            navigate("/student-dashboard");
         } else {
-            setErrors({});
-            console.log("Validation passed — navigating to /dashboard"); // <-- second log
-            navigate("/dashboard");
-            alert("Login successful!");
+            navigate("/instructor-dashboard");
         }
     };
 
@@ -78,6 +70,20 @@ function Login() {
                             {errors.password}
                         </p>
                     )}
+                </div>
+                <div className="mb-4">
+                    <label className="block mb-2 font-semibold">
+                        Login As
+                    </label>
+
+                    <select
+                        value={role}
+                        onChange={(e) => setRole(e.target.value)}
+                        className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    >
+                        <option value="student">Student</option>
+                        <option value="instructor">Instructor</option>
+                    </select>
                 </div>
 
                 <button
