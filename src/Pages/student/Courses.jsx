@@ -6,15 +6,14 @@ function Courses() {
 
     useEffect(() => {
 
-        const savedCourses = localStorage.getItem("courses");
+        const storedCourses = JSON.parse(localStorage.getItem("courses")) || [];
 
-        if (savedCourses) {
-            setCourses(JSON.parse(savedCourses));
-        }
+        setCourses(storedCourses);
 
     }, []);
 
     return (
+
         <div>
 
             <h1 className="text-2xl font-bold mb-6">
@@ -22,19 +21,27 @@ function Courses() {
             </h1>
 
             {courses.length === 0 ? (
+
                 <p>No courses available</p>
+
             ) : (
 
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-3 gap-6">
 
                     {courses.map((course, index) => (
 
                         <div
                             key={index}
-                            className="bg-white shadow p-4 rounded"
+                            className="bg-white p-6 rounded shadow"
                         >
 
-                            {course}
+                            <h2 className="text-lg font-semibold">
+                                {course}
+                            </h2>
+
+                            <p className="text-gray-500 mt-2">
+                                Course description
+                            </p>
 
                         </div>
 
@@ -45,7 +52,9 @@ function Courses() {
             )}
 
         </div>
+
     );
+
 }
 
 export default Courses;

@@ -2,76 +2,49 @@ import { useState, useEffect } from "react";
 
 function ManageCourses() {
 
-    // ===============================
-    // React state to store courses
-    // ===============================
+    const [course, setCourse] = useState("");
     const [courses, setCourses] = useState([]);
 
-    // ===============================
-    // State for new course input
-    // ===============================
-    const [newCourse, setNewCourse] = useState("");
-
-    // ===============================
-    // Load courses from localStorage
-    // (runs when page loads)
-    // ===============================
+    // Load courses when page opens
     useEffect(() => {
-        const savedCourses = localStorage.getItem("courses");
 
-        if (savedCourses) {
-            setCourses(JSON.parse(savedCourses));
-        }
+        const storedCourses = JSON.parse(localStorage.getItem("courses")) || [];
+
+        setCourses(storedCourses);
+
     }, []);
 
-    // ===============================
-    // Save courses whenever they change
-    // ===============================
-    useEffect(() => {
-        localStorage.setItem("courses", JSON.stringify(courses));
-    }, [courses]);
-
-    // ===============================
     // Add new course
-    // ===============================
     const addCourse = () => {
 
-        if (newCourse.trim() === "") return;
+        if (!course) return;
 
-        setCourses([...courses, newCourse]);
+        const newCourses = [...courses, course];
 
-        setNewCourse("");
-    };
+        setCourses(newCourses);
 
-    // ===============================
-    // Remove course
-    // ===============================
-    const removeCourse = (index) => {
+        localStorage.setItem("courses", JSON.stringify(newCourses));
 
-        const updatedCourses = courses.filter(
-            (_, i) => i !== index
-        );
+        setCourse("");
 
-        setCourses(updatedCourses);
     };
 
     return (
-        <div className="p-6">
 
-            {/* Page title */}
+        <div>
+
             <h1 className="text-2xl font-bold mb-6">
                 Manage Courses
             </h1>
 
-            {/* Add course section */}
             <div className="flex gap-3 mb-6">
 
                 <input
                     type="text"
-                    placeholder="Enter course name"
-                    value={newCourse}
-                    onChange={(e) => setNewCourse(e.target.value)}
-                    className="border p-2 rounded w-64"
+                    placeholder="Course Name"
+                    value={course}
+                    onChange={(e) => setCourse(e.target.value)}
+                    className="border p-2 rounded w-60"
                 />
 
                 <button
@@ -83,41 +56,25 @@ function ManageCourses() {
 
             </div>
 
-            {/* Course list */}
-            <div className="space-y-3">
+            <ul className="space-y-3">
 
-                {courses.length === 0 ? (
-                    <p className="text-gray-500">
-                        No courses added yet.
-                    </p>
-                ) : (
-                    courses.map((course, index) => (
+                {courses.map((c, index) => (
 
-                        <div
-                            key={index}
-                            className="flex justify-between items-center bg-white shadow p-3 rounded"
-                        >
+                    <li
+                        key={index}
+                        className="bg-white p-4 rounded shadow"
+                    >
+                        {c}
+                    </li>
 
-                            {/* Course name */}
-                            <span>{course}</span>
+                ))}
 
-                            {/* Delete button */}
-                            <button
-                                onClick={() => removeCourse(index)}
-                                className="bg-red-500 text-white px-3 py-1 rounded"
-                            >
-                                Remove
-                            </button>
-
-                        </div>
-
-                    ))
-                )}
-
-            </div>
+            </ul>
 
         </div>
+
     );
+
 }
 
 export default ManageCourses;
